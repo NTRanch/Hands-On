@@ -1,0 +1,43 @@
+{
+ "layer_pngs_count": 20,
+ "layer_pngs_bytes": 142727,
+ "per_layer": {
+  "bg": 3799,
+  "bucket": 4277,
+  "chest": 10305,
+  "face_blush": 3365,
+  "face_eyes_half": 3592,
+  "face_eyes_melt": 3868,
+  "face_eyes_open": 4240,
+  "face_eyes_up": 4105,
+  "face_hearts": 5088,
+  "face_mouth_open": 3367,
+  "face_mouth_smile": 2864,
+  "face_sparkles": 3125,
+  "front_outfit": 17662,
+  "handL": 5914,
+  "handR": 5912,
+  "head_base": 19062,
+  "head_hair": 12265,
+  "rear_body": 20946,
+  "rear_tail": 6141,
+  "sky": 2830
+ },
+ "code_bytes": 38106,
+ "params_bytes": 2412,
+ "stage_svg_bytes": 10774,
+ "spritesheet_bytes": {
+  "idle": 4275377,
+  "climb": 6287525,
+  "milking": 2252880
+ },
+ "gif_bytes": {
+  "idle": 1826642,
+  "climb": 2764757,
+  "milking": 951872
+ },
+ "baked_total_sheet_plus_gif": 18359053,
+ "frame_pngs_total_bytes": 14120124,
+ "codeanim_raster_total": 183245,
+ "codeanim_vector_total": 51292
+}

@@ -1,0 +1,8 @@
+{
+ "motion": "idle",
+ "frames": 64,
+ "fps": 16,
+ "render_wall_s": 11.99,
+ "loop_seam_meanabsdiff": 0.4462,
+ "median_interframe_meanabsdiff": 0.3989
+}

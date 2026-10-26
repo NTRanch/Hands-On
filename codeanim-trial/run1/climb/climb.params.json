@@ -1,0 +1,30 @@
+{
+ "motion": "climb",
+ "frames": 96,
+ "fps": 16,
+ "loop": false,
+ "gaze_roll": "eye layers offset y by -3.2*seg(s,2,4) px so the upward iris travel continues into the melt layer instead of un-rolling at peak (9228588 grammar)",
+ "s_curve": "s: 0 at f<8, linear-in-segments with smoothstep intra-segment easing over f=8..79, hold 4.0 after",
+ "ladder": [
+  "Neutral",
+  "Smiling",
+  "Flushed",
+  "Aroused",
+  "Torogao"
+ ],
+ "weights": "expr_weights(s): open 0-1, half 1-2, up 2-3, melt 3-4 (smoothstep cross-fades); blush seg(0.8,2.0); sparkles seg(2.2,3.2) + 8f pulse; mouth swap seg(2.4,3.2); hearts seg(3.4,4.0)",
+ "posture": {
+  "head_tilt_deg_per_s": -0.85,
+  "head_lift_px_per_s": -1.6,
+  "chest_fullness_scale_per_s": 0.012,
+  "pivot_neck": [
+   600,
+   302
+  ]
+ },
+ "tail_spring": {
+  "k": 55.0,
+  "c": 6.5,
+  "amp_growth": "x(1+0.7*s/4)"
+ }
+}

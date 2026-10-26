@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Betsy — First Milking (hands-on, Level 1)</title>
+<style>
+  :root { --pink:#ff2e88; --ink:#14100f; --paper:#fff7ee; --wood:#8a5a2b; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: ui-rounded, "Segoe UI", system-ui, sans-serif; background:#1b1420; color:var(--paper); }
+  header { padding:10px 16px; display:flex; gap:16px; align-items:baseline; flex-wrap:wrap; }
+  header h1 { font-size:20px; margin:0; color:#ffd9e8; }
+  header .sub { font-size:13px; opacity:.85; }
+  main { display:grid; grid-template-columns: 300px 1fr 340px; gap:12px; padding:0 12px 16px; }
+  @media (max-width: 1100px) { main { grid-template-columns: 1fr; } }
+  .card { background:#2a1f2e; border:2px solid #453254; border-radius:14px; padding:12px; }
+  .card h2 { margin:0 0 8px; font-size:15px; color:#ffc2da; }
+  .bar { height:16px; background:#17101c; border-radius:8px; overflow:hidden; border:1px solid #57456b; }
+  .bar > div { height:100%; width:0%; transition:width .12s linear; }
+  #meterFill { background:linear-gradient(90deg,#ff8fb8,var(--pink)); }
+  #resFill { background:linear-gradient(90deg,#ffe9a8,#ffb347); }
+  .row { display:flex; justify-content:space-between; font-size:12.5px; margin:8px 0 4px; }
+  button { font:inherit; cursor:pointer; border-radius:999px; border:2px solid #6b5578; background:#3a2b45; color:var(--paper); padding:8px 14px; }
+  button:hover { border-color:var(--pink); }
+  button.preset.active { background:var(--pink); border-color:#ffd9e8; color:white; }
+  input[type=range] { width:100%; accent-color:var(--pink); }
+  .stageWrap { position:relative; }
+  svg.stage { width:100%; height:auto; display:block; background:linear-gradient(#7cc7ff 0 62%, #79d84f 62% 100%); border-radius:12px; }
+  .overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+             background:rgba(20,10,24,.72); border-radius:12px; text-align:center; padding:16px; }
+  .overlay h2 { font-size:30px; margin:0 0 6px; color:#ffd9e8; }
+  .overlay p { margin:4px 0 12px; max-width:420px; font-size:14.5px; }
+  .hidden { display:none !important; }
+  .actions { display:flex; gap:10px; justify-content:center; margin-top:10px; flex-wrap:wrap; }
+  .act { width:86px; height:86px; border-radius:50%; font-size:13px; line-height:1.15; position:relative; background:#3a2b45; }
+  .act small { display:block; font-size:10.5px; opacity:.8; }
+  .act.locked { opacity:.45; filter:grayscale(.6); }
+  .act.locked::after { content:"✕"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+                       font-size:44px; color:#ff5470; pointer-events:none; }
+  .act.shake { animation:shake .3s; }
+  @keyframes shake { 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+  #log { font-size:12.5px; min-height:96px; }
+  #log div { margin:3px 0; border-left:3px solid var(--pink); padding-left:8px; }
+  .faceLayer { transition: opacity .18s linear; }
+  #studioCanvas { width:100%; background:#17101c; border-radius:10px; border:1px solid #57456b; cursor:crosshair; }
+  .score { font-size:14px; margin-top:6px; }
+  .score b.pass { color:#7dff9a; } .score b.fail { color:#ff7d7d; }
+  select, input[type=number] { font:inherit; background:#17101c; color:var(--paper); border:1px solid #57456b; border-radius:8px; padding:4px 8px; }
+  .hint { font-size:12px; opacity:.8; }
+  #beatDot { width:14px; height:14px; border-radius:50%; background:#57456b; display:inline-block; vertical-align:middle; }
+  #beatDot.on { background:var(--pink); box-shadow:0 0 12px var(--pink); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Betsy — First Milking</h1>
+  <div class="sub">hands-on · Level 1 · parameters → curves → fixed-step → reaction profiles.
+  Squeeze on the beat (<span id="beatDot"></span> every 500 ms): <b>A</b> = left hand, <b>L</b> = right hand. Click = gentle, hold = hard (too hard spills).
+  Art: <b>House Cel</b> — flat cel, bold lineart, glossy detailed eyes. The eye rule: pupils are hearts; the iris keeps her own color.</div>
+</header>
+<main>
+  <!-- ============ LEFT: gauges + sensitivity dial ============ -->
+  <section class="card">
+    <h2>🥛 Bottle gauge — the win meter</h2>
+    <svg viewBox="0 0 120 190" style="width:110px;display:block;margin:0 auto">
+      <defs><clipPath id="bottleClip"><path d="M45 30 h30 v25 c14 10 20 24 20 45 v65 a15 15 0 0 1 -15 15 h-40 a15 15 0 0 1 -15 -15 v-65 c0-21 6-35 20-45 z"/></clipPath></defs>
+      <path d="M45 30 h30 v25 c14 10 20 24 20 45 v65 a15 15 0 0 1 -15 15 h-40 a15 15 0 0 1 -15 -15 v-65 c0-21 6-35 20-45 z" fill="#0e2a3a" stroke="#bfe8ff" stroke-width="3"/>
+      <g clip-path="url(#bottleClip)"><rect id="bottleFill" x="20" y="180" width="80" height="0" fill="#fff6ea"/></g>
+      <rect x="42" y="14" width="36" height="16" rx="4" fill="#bfe8ff"/>
+    </svg>
+    <div class="row"><span>Bottle</span><b id="bottleText">0 / 1000</b></div>
+    <div class="row"><span>Arousal meter</span><b id="meterText">0</b></div>
+    <div class="bar"><div id="meterFill"></div></div>
+    <div class="row"><span>Expression</span><b id="exprText">Neutral</b></div>
+    <div class="row"><span>Reservoir (stored)</span><b id="resText">0</b></div>
+    <div class="bar"><div id="resFill"></div></div>
+    <div class="row"><span>Combo</span><b id="comboText">0</b></div>
+    <div class="row"><span>Spills</span><b id="spillText">0</b></div>
+    <div class="row"><span>Climaxes</span><b id="climaxText">0</b></div>
+    <div class="row"><span>Status</span><b id="statusText">ready</b></div>
+
+    <h2 style="margin-top:16px">🎚 Sensitivity dial — her reaction profile</h2>
+    <div class="row"><span>Gain (arousal per squeeze)</span><b id="gainVal">1.00</b></div>
+    <input id="gain" type="range" min="0.1" max="3" step="0.05" value="1">
+    <div class="row"><span>Threshold (climax at)</span><b id="thrVal">96</b></div>
+    <input id="thr" type="range" min="30" max="100" step="1" value="96">
+    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+      <button class="preset" id="presetHigh">HIGH gain · low thr</button>
+      <button class="preset active" id="presetBal">Balanced</button>
+      <button class="preset" id="presetLow">LOW gain · high thr</button>
+    </div>
+    <p class="hint">Drag the dial and watch her respond differently <i>live</i>.
+    High gain + low threshold: a few good squeezes send her over — small reservoir, small burst.
+    Low gain + high threshold: the reservoir visibly fills (watch her fullness + the stored bar),
+    and the eventual climax bursts proportionally into the bottle.</p>
+  </section>
+
+  <!-- ============ CENTER: the stage ============ -->
+  <section class="card stageWrap">
+    <svg class="stage" viewBox="0 0 800 520" id="stage">
+      <defs>
+        <!-- HOUSE CEL eyes (SPEC §7). One eye, centered on (0,0),
+             instanced per side with <use>. THE EYE RULE: the pupil
+             is a HEART in every state; the iris stays Betsy's
+             canonical warm amber-brown — heart is shape only.
+             States differ by lid, gaze, catchlights and pupil
+             luminosity — never by pupil shape or iris color. -->
+        <path id="heartPupil" d="M0 3.9 C-1.1 1.7 -5.3 -0.7 -5.3 -3.2 C-5.3 -5.8 -2 -6.5 0 -4 C2 -6.5 5.3 -5.8 5.3 -3.2 C5.3 -0.7 1.1 1.7 0 3.9 Z"/>
+        <path id="sparkStar" d="M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2 Z" fill="#fff3b0"/>
+        <g id="eyeOpen">
+          <ellipse rx="10.5" ry="13" fill="#ffffff"/>
+          <circle r="7.6" cy="0.5" fill="#a34d16"/>
+          <path d="M-9 -6.5 Q0 -13 9 -6.5 Q0 -10 -9 -6.5 Z" fill="#7c3510" opacity="0.35"/>
+          <use href="#heartPupil" fill="#2a1208"/>
+          <circle cx="-3.1" cy="-4.6" r="2.3" fill="#ffffff"/>
+          <circle cx="3.4" cy="3.6" r="1.2" fill="#ffffff" opacity="0.9"/>
+          <path d="M-11 -8 Q0 -16.5 11 -8" stroke="#2a1610" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+          <ellipse rx="10.5" ry="13" fill="none" stroke="#2a1610" stroke-width="2.6"/>
+        </g>
+        <g id="eyeHalf">
+          <ellipse rx="10.5" ry="8.5" cy="2.5" fill="#ffffff"/>
+          <circle r="6.6" cy="4" fill="#a34d16"/>
+          <use href="#heartPupil" transform="translate(0 4) scale(0.82)" fill="#2a1208"/>
+          <circle cx="-2.8" cy="0.5" r="1.9" fill="#ffffff"/>
+          <path d="M-11.5 -2 Q0 -9 11.5 -2" stroke="#2a1610" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <ellipse rx="10.5" ry="8.5" cy="2.5" fill="none" stroke="#2a1610" stroke-width="2.6"/>
+        </g>
+        <g id="eyeUp">
+          <ellipse rx="10.5" ry="12" fill="#ffffff"/>
+          <circle r="7.2" cy="-3.4" fill="#a34d16"/>
+          <use href="#heartPupil" transform="translate(0 -3.4)" fill="#2a1208"/>
+          <circle cx="-3" cy="-7.6" r="2.1" fill="#ffffff"/>
+          <circle cx="3.2" cy="0.4" r="1.1" fill="#ffffff" opacity="0.9"/>
+          <path d="M-10.5 5.5 Q0 12.5 10.5 5.5" stroke="#2a1610" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M-11 -7.5 Q0 -15.5 11 -7.5" stroke="#2a1610" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+          <ellipse rx="10.5" ry="12" fill="none" stroke="#2a1610" stroke-width="2.6"/>
+        </g>
+        <g id="eyeMelt">
+          <ellipse rx="10.5" ry="9.5" cy="2" fill="#ffffff"/>
+          <circle r="6.9" cy="-0.5" fill="#a34d16"/>
+          <use href="#heartPupil" transform="translate(0 -0.5)" fill="#ff4d94"/>
+          <use href="#heartPupil" transform="translate(0 -0.5) scale(0.45)" fill="#ffd7ea"/>
+          <circle cx="-2.9" cy="-4.4" r="2" fill="#ffffff"/>
+          <path d="M-11.5 -3.5 Q0 -11 11.5 -3.5" stroke="#2a1610" stroke-width="4.6" fill="none" stroke-linecap="round"/>
+          <path d="M-10.5 7 Q0 13.5 10.5 7" stroke="#2a1610" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+          <ellipse rx="10.5" ry="9.5" cy="2" fill="none" stroke="#2a1610" stroke-width="2.6"/>
+        </g>
+      </defs>
+      <!-- fence (both views lean on the same fence line) -->
+      <g stroke="#8a5a2b" stroke-width="14"><line x1="0" y1="300" x2="800" y2="300"/><line x1="0" y1="360" x2="800" y2="360"/></g>
+      <g fill="#a06a35"><rect x="60" y="240" width="22" height="190"/><rect x="330" y="240" width="22" height="190"/>
+      <rect x="470" y="240" width="22" height="190"/><rect x="720" y="240" width="22" height="190"/></g>
+
+      <!-- ===== LEFT: rear view ===== -->
+      <g id="rearView">
+        <path d="M120 470 q10-120 30-170 q40-40 90 0 q20 50 30 170 z" fill="#9c5220" stroke="#2a1610" stroke-width="3.5"/><!-- hair back -->
+        <path d="M228 306 q22 54 30 164 l-26 0 q-4-96-4-164z" fill="#6e3510"/><!-- hair shadow mass, hard edge -->
+        <path d="M140 330 q55-45 110 0 l14 110 q-69 25-138 0 z" fill="#fff3d6" stroke="#2a1610" stroke-width="3.5"/><!-- outfit back -->
+        <path d="M140 330 q55-45 110 0 l3 22 q-58-34-116 0z" fill="#ecd9a8"/><!-- outfit shadow band -->
+        <g fill="#241a20"><ellipse cx="170" cy="370" rx="16" ry="11"/><ellipse cx="225" cy="410" rx="13" ry="9"/></g>
+        <g id="tail" style="transform-origin:262px 350px">
+          <path d="M262 350 q40 30 26 84" stroke="#9c5220" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <ellipse cx="288" cy="440" rx="10" ry="16" fill="#6e3510"/>
+        </g>
+        <ellipse cx="150" cy="300" rx="18" ry="12" fill="#ffd9b3" stroke="#2a1610" stroke-width="3"/><!-- ear -->
+        <ellipse cx="240" cy="300" rx="18" ry="12" fill="#ffd9b3" stroke="#2a1610" stroke-width="3"/>
+      </g>
+      <!-- bucket under rear view -->
+      <g>
+        <path d="M150 500 l12-52 h76 l12 52 z" fill="#5b6b7a" stroke="#33404c" stroke-width="3"/>
+        <clipPath id="bucketClip"><path d="M150 500 l12-52 h76 l12 52 z"/></clipPath>
+        <g clip-path="url(#bucketClip)"><rect id="bucketFill" x="145" y="500" width="110" height="0" fill="#fff6ea"/></g>
+      </g>
+      <text x="200" y="518" text-anchor="middle" font-size="13" fill="#33404c">bucket</text>
+
+      <!-- ===== RIGHT: front view ===== -->
+      <g id="frontView">
+        <path d="M520 330 q80-55 160 0 l18 130 q-98 30-196 0 z" fill="#fff3d6" stroke="#2a1610" stroke-width="3.5"/><!-- outfit -->
+        <path d="M508 446 q92 28 184 0 l3 14 q-95 30-190 0z" fill="#ecd9a8"/><!-- outfit shadow band -->
+        <g fill="#241a20"><ellipse cx="560" cy="380" rx="18" ry="12"/><ellipse cx="640" cy="425" rx="15" ry="10"/><ellipse cx="600" cy="355" rx="12" ry="8"/></g>
+        <!-- chest: scale driven by squeeze parameter + spring jiggle + fullness -->
+        <g id="chest" style="transform-origin:600px 345px">
+          <ellipse cx="562" cy="345" rx="40" ry="32" fill="#ffd9b3" stroke="#2a1610" stroke-width="3.5"/>
+          <ellipse cx="638" cy="345" rx="40" ry="32" fill="#ffd9b3" stroke="#2a1610" stroke-width="3.5"/>
+          <path d="M528 358 q34 22 68 0 q-34 9-68 0z M604 358 q34 22 68 0 q-34 9-68 0z" fill="#f2a56b"/><!-- hard cel shadow crescents -->
+          <ellipse cx="548" cy="330" rx="11" ry="5" fill="#ffffff" opacity="0.55"/>
+          <ellipse cx="624" cy="330" rx="11" ry="5" fill="#ffffff" opacity="0.55"/>
+          <path d="M522 330 q40-22 80 0 q-40 16-80 0z M598 330 q40-22 80 0 q-40 16-80 0z" fill="#fff3d6" stroke="#2a1610" stroke-width="2.5"/>
+        </g>
+        <!-- POV hands (position animated to the squeezed side) -->
+        <g id="handL" opacity="0"><ellipse cx="520" cy="345" rx="26" ry="20" fill="#ffd9b3" stroke="#2a1610" stroke-width="3"/><path d="M500 330 q20-14 40 0" stroke="#c47b43" stroke-width="5" fill="none"/></g>
+        <g id="handR" opacity="0"><ellipse cx="680" cy="345" rx="26" ry="20" fill="#ffd9b3" stroke="#2a1610" stroke-width="3"/><path d="M660 330 q20-14 40 0" stroke="#c47b43" stroke-width="5" fill="none"/></g>
+        <!-- head -->
+        <g id="head">
+          <ellipse cx="540" cy="205" rx="20" ry="13" fill="#ffd9b3" stroke="#2a1610" stroke-width="3"/><ellipse cx="660" cy="205" rx="20" ry="13" fill="#ffd9b3" stroke="#2a1610" stroke-width="3"/><!-- ears -->
+          <path d="M548 178 q-8-26 10-34 q10 16 2 32z M652 178 q8-26-10-34 q-10 16-2 32z" fill="#f3e3c2" stroke="#2a1610" stroke-width="3"/><!-- horns -->
+          <circle cx="600" cy="240" r="62" fill="#ffd9b3" stroke="#2a1610" stroke-width="3.5"/>
+          <path d="M564 290 q36 18 72 0 q-36 9-72 0z" fill="#f2a56b" opacity="0.85"/><!-- chin shadow, hard edge -->
+          <path d="M538 238 q-4-72 62-78 q66 6 62 78 q-2-44-30-52 q10 14 4 22 q-14-26-36-26 q-22 0-36 26 q-6-8 4-22 q-28 8-30 52z" fill="#9c5220" stroke="#2a1610" stroke-width="3.5"/><!-- hair -->
+          <path d="M600 162 q40 3 54 34 q-16-16-54-18 q-38 2-54 18 q14-31 54-34z" fill="#6e3510"/><!-- hair shadow mass -->
+          <path d="M548 200 q52-30 104 0 q-52-17-104 0z" fill="#d98a44" opacity="0.9"/><!-- hair highlight band -->
+          <g id="blush" opacity="0" fill="#ff8fab"><ellipse cx="560" cy="263" rx="13" ry="7"/><ellipse cx="640" cy="263" rx="13" ry="7"/><ellipse cx="562" cy="264" rx="7" ry="4" fill="#ff6b93"/><ellipse cx="638" cy="264" rx="7" ry="4" fill="#ff6b93"/></g>
+          <!-- eyes: four authored House Cel layers, cross-faded by the
+               state machine — open → heavy-lidded → gaze-up → the melted
+               torogao layer. TEACHING NOTE: the governed climax expression
+               ("torogao face") is a NAMED expression = a parameter recipe,
+               reached by smooth parameter travel, never a cut. The eye
+               rule binds every layer: heart pupils, her own iris color. -->
+          <g id="eyesOpen" class="faceLayer"><use href="#eyeOpen" transform="translate(578 242)"/><use href="#eyeOpen" transform="translate(622 242)"/></g>
+          <g id="eyesHalf" class="faceLayer" opacity="0"><use href="#eyeHalf" transform="translate(578 243)"/><use href="#eyeHalf" transform="translate(622 243)"/></g>
+          <g id="eyesUp" class="faceLayer" opacity="0"><use href="#eyeUp" transform="translate(578 242)"/><use href="#eyeUp" transform="translate(622 242)"/></g>
+          <g id="eyesMelt" class="faceLayer" opacity="0"><use href="#eyeMelt" transform="translate(578 243)"/><use href="#eyeMelt" transform="translate(622 243)"/></g>
+          <g id="sparkles" class="faceLayer" opacity="0"><use href="#sparkStar" transform="translate(556 220)"/><use href="#sparkStar" transform="translate(648 214) scale(0.7)"/><use href="#sparkStar" transform="translate(640 264) scale(0.55)"/></g>
+          <path id="mouthSmile" class="faceLayer" d="M586 268 q14 10 28 0" stroke="#7a3520" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <g id="mouthOpen" class="faceLayer" opacity="0"><ellipse cx="600" cy="273" rx="10" ry="13" fill="#7c2a2a"/><ellipse cx="600" cy="279" rx="6.5" ry="5" fill="#ff8fab"/></g>
+          <g id="hearts" opacity="0" fill="#ff2e88"><path d="M540 168 c-6-10-24-6-24 6 c0 10 12 16 24 26 c12-10 24-16 24-26 c0-12-18-16-24-6z"/><path d="M668 150 c-5-8-19-5-19 5 c0 8 10 13 19 21 c9-8 19-13 19-21 c0-10-14-13-19-5z" transform="scale(0.8) translate(160,40)"/></g>
+          <path d="M584 296 h32" stroke="#c9a227" stroke-width="5"/><!-- choker -->
+          <circle id="bell" cx="600" cy="308" r="10" fill="#f2c531" stroke="#2a1610" stroke-width="2"/>
+        </g>
+      </g>
+      <text x="200" y="30" font-size="16" fill="#33404c">rear view</text>
+      <text x="600" y="30" text-anchor="middle" font-size="16" fill="#33404c">front view — Betsy</text>
+    </svg>
+
+    <div class="actions">
+      <button class="act" id="btnL">🤚 Milk<small>left hand (A)</small></button>
+      <button class="act locked" id="btnCaress">💗 Caress<small>unlock: Smiling</small></button>
+      <button class="act locked" id="btnBoth">🙌 Both<small>unlock: Aroused</small></button>
+      <button class="act locked" id="btnSpank">🍑 Spank<small>unlock: Flushed</small></button>
+      <button class="act" id="btnR">🤚 Milk<small>right hand (L)</small></button>
+    </div>
+
+    <div class="overlay" id="titleOverlay">
+      <h2>Betsy — First Milking</h2>
+      <p>Fill the bottle. Squeeze on the 500&nbsp;ms beat — steady tempo fills, mashing spills.
+      Side actions raise her state and unlock as she warms up. Tune her sensitivity and feel the lesson:
+      a reaction profile is just gain, threshold, and a reservoir.</p>
+      <button id="startBtn" style="font-size:18px;padding:12px 28px;background:var(--pink);border-color:#ffd9e8">▶ Press to start</button>
+    </div>
+    <div class="overlay hidden" id="winOverlay">
+      <h2>🥛 Bottle full!</h2>
+      <p id="winText"></p>
+      <button id="againBtn" style="font-size:16px;padding:10px 24px;background:var(--pink);border-color:#ffd9e8">Play again</button>
+    </div>
+  </section>
+
+  <!-- ============ RIGHT: log + studio mode ============ -->
+  <section class="card">
+    <h2>📜 Session log</h2>
+    <div id="log"></div>
+    <h2 style="margin-top:14px">🎬 Studio Mode — author the squeeze loop</h2>
+    <canvas id="studioCanvas" width="640" height="180"></canvas>
+    <div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap">
+      <label>Easing <select id="easing"><option value="linear">Linear</option><option value="smooth" selected>Smooth</option><option value="easeinout">EaseInOut</option><option value="hold">Hold</option></select></label>
+      <label>Cycle ms <input id="cycleMs" type="number" value="1000" min="400" max="3000" step="100" style="width:80px"></label>
+      <button id="previewBtn">▶ Preview loop</button>
+      <button id="clearBtn">Clear</button>
+    </div>
+    <div class="score" id="studioScore">Click the timeline to place keyforms for the squeeze parameter.</div>
+    <p class="hint">Scored on <b>loop closure</b> (value at cycle end must equal value at cycle start —
+    a loop that doesn't close pops every iteration in a real engine) and <b>tempo match</b> (the game's
+    squeeze cycle is 1000 ms: two beats). Drag keyforms to move them; click one to delete it.
+    Preview drives the same chest spring the game uses.</p>
+  </section>
+</main>
+
+<script>
+"use strict";
+/* =====================================================================
+   Betsy — First Milking. The HTML twin of milking-core (Rust).
+   The mechanism is identical in both: a FIXED-STEP simulation owns
+   every number; rendering only reads. Constants match
+   milking-core/src/sim.rs — change them in both places or neither.
+
+   TEACHING MAP (see CURRICULUM.md):
+   - squeeze is a PARAMETER (0..1), not a picture.        → torogao-format
+   - the sim advances in 60 Hz TICKS, never per frame.   → torogao-engine
+   - her reactions are a PROFILE: gain/threshold/reservoir. → reaction profiles
+   - the chest bounce is a SPRING driven by the parameter. → secondary motion
+   ===================================================================== */
+
+// ---- Config: mirrors milking_core::sim::Config ----------------------
+const CFG = {
+  tickHz: 60, idealInterval: 30, perfectWindow: 6, goodWindow: 12,
+  mashFloor: 15, pressureCeiling: 900, bottleCapacity: 1000,
+  flowBase: 0.55, productiveZone: 0.35, spillAmount: 15,
+  meterPerfect: 2, meterGood: 1, meterCaress: 6, meterSpank: 10,
+  spankSpam: 48, meterDecay: 0.4 / 60, squeezeDecay: 0.08,
+};
+const EXPRESSIONS = ["Neutral", "Smiling", "Flushed", "Aroused", "Ecstatic"];
+const ENTRY = [0, 20, 40, 60, 80];          // meter thresholds per state
+const FLOW_GAIN = [1.0, 1.15, 1.3, 1.5, 1.75];
+const HYSTERESIS = 10;
+
+// ---- Sensitivity profile (Amendment 1): the reaction-profile lesson.
+// A profile is DATA: gain scales incoming stimulation, threshold is
+// where the governed climax expression triggers, the reservoir stores
+// stimulation as volume (and visible fullness), refractory is the
+// post-climax sensitivity dip.
+const PRESETS = {
+  high:     { gain: 2.6,  threshold: 42, reservoirCapacity: 220, reservoirRate: 0.30, refractoryTicks: 300 },
+  balanced: { gain: 1.0,  threshold: 96, reservoirCapacity: 220, reservoirRate: 0.55, refractoryTicks: 300 },
+  low:      { gain: 0.45, threshold: 98, reservoirCapacity: 420, reservoirRate: 0.90, refractoryTicks: 300 },
+};
+let profile = { ...PRESETS.balanced };
+
+// ---- Simulation state (the whole game, in one object) ---------------
+const S = {
+  started: false, tick: 0, squeeze: 0, bottle: 0, totalProduced: 0,
+  meter: 0, expr: 0, reservoir: 0, climaxes: 0, lastIntensity: 0,
+  refractoryUntil: 0, spills: 0, combo: 0, lastSqueeze: -1, lastSpank: -1,
+  won: false,
+  // Secondary motion: a damped spring the squeeze parameter excites.
+  springX: 0, springV: 0, bellPhase: 0,
+};
+const inRefractory = () => S.tick < S.refractoryUntil;
+const effGain = () => profile.gain * (inRefractory() ? 0.5 : 1);
+const fullness = () => profile.reservoirCapacity > 0 ? S.reservoir / profile.reservoirCapacity : 0;
+
+// Expression machine: ONE step per tick, with hysteresis — the face
+// walks the ladder, it never teleports (milking-core step_toward).
+function stepExpression() {
+  if (S.expr < 4 && S.meter >= ENTRY[S.expr + 1]) S.expr++;
+  else if (S.expr > 0 && S.meter < ENTRY[S.expr] - HYSTERESIS) S.expr--;
+}
+
+// Climax: the governed "torogao" expression. Intensity and burst
+// scale with the reservoir at trigger — the slow build pays bigger.
+function climax() {
+  const intensity = 0.35 + 0.65 * fullness();
+  const burst = S.reservoir * (0.6 + 0.4 * intensity);
+  S.bottle = Math.min(CFG.bottleCapacity, S.bottle + burst);
+  S.totalProduced += burst;
+  S.reservoir = 0; S.meter = Math.max(0, S.meter - 45);
+  S.climaxes++; S.lastIntensity = intensity;
+  S.refractoryUntil = S.tick + profile.refractoryTicks;
+  if (S.bottle >= CFG.bottleCapacity) win();
+  log(`💥 CLIMAX — the torogao face. Intensity ${intensity.toFixed(2)}, reservoir burst +${burst.toFixed(0)} into the bottle.`);
+  blip(880, 0.18); flashHearts();
+  return { intensity, burst };
+}
+
+// Stimulation enters through the profile: part raises the meter,
+// part is stored in the reservoir. Returns a climax or null.
+function addStimulation(base) {
+  const scaled = base * effGain();
+  const stored = Math.max(0, Math.min(scaled * profile.reservoirRate, profile.reservoirCapacity - S.reservoir));
+  S.reservoir += stored;
+  S.meter = Math.min(100, S.meter + scaled);
+  stepExpression();
+  if (!inRefractory() && S.meter >= Math.min(profile.threshold, 100)) return climax();
+  return null;
+}
+
+function spill(why) {
+  S.bottle = Math.max(0, S.bottle - CFG.spillAmount);
+  S.spills++; S.combo = 0;
+  log(`💦 Spill (${why}) — −${CFG.spillAmount} from the bottle.`);
+  blip(160, 0.12);
+}
+
+// One fixed tick. Everything the game *is* happens here and only here.
+function step() {
+  if (!S.started || S.won) return;
+  S.tick++;
+  S.squeeze = Math.max(0, S.squeeze - CFG.squeezeDecay);
+  if (S.squeeze >= CFG.productiveZone) {
+    const produced = S.squeeze * FLOW_GAIN[S.expr] * CFG.flowBase;
+    S.bottle = Math.min(CFG.bottleCapacity, S.bottle + produced);
+    S.totalProduced += produced;
+    if (S.bottle >= CFG.bottleCapacity) { win(); return; }
+  }
+  S.meter = Math.max(0, S.meter - CFG.meterDecay);
+  stepExpression();
+  // Spring follow-through: the chest jiggle is physics, not keyframes.
+  const target = S.squeeze * 0.55 + fullness() * 0.30;
+  const accel = (target - S.springX) * 90 - S.springV * 7;
+  S.springV += accel / CFG.tickHz; S.springX += S.springV / CFG.tickHz;
+}
+
+// Input: a squeeze attempt. Grading mirrors the Rust core exactly.
+function squeeze(hand, pressure) {
+  if (!S.started || S.won) return;
+  if (hand === "both" && S.expr < 3) return lockedFeedback("btnBoth");
+  let grade;
+  if (S.lastSqueeze < 0) grade = "good"; // first squeeze sets the beat
+  else {
+    const interval = S.tick - S.lastSqueeze;
+    if (interval < CFG.mashFloor) { S.lastSqueeze = S.tick; return spill("mashed"); }
+    if (pressure > CFG.pressureCeiling) { S.lastSqueeze = S.tick; return spill("too hard"); }
+    const err = Math.abs(interval - CFG.idealInterval) * (hand === "both" ? 1 / 0.75 : 1);
+    if (err <= CFG.perfectWindow) grade = "perfect";
+    else if (err <= CFG.goodWindow) grade = "good";
+    else { S.lastSqueeze = S.tick; return spill("off the beat"); }
+  }
+  S.lastSqueeze = S.tick; S.combo++;
+  S.squeeze = Math.min(1, (0.55 + 0.45 * (pressure / 1000)) * (hand === "both" ? 1.0 : 1.0));
+  showHand(hand);
+  const c = addStimulation(grade === "perfect" ? CFG.meterPerfect : CFG.meterGood);
+  if (!c) { if (grade === "perfect") { log("✨ Perfect squeeze — right on the beat."); blip(660, 0.07); } }
+}
+
+function sideAction(kind) {
+  if (!S.started || S.won) return;
+  if (kind === "caress" && S.expr < 1) return lockedFeedback("btnCaress");
+  if (kind === "spank" && S.expr < 2) return lockedFeedback("btnSpank");
+  if (kind === "spank") {
+    if (S.lastSpank >= 0 && S.tick - S.lastSpank < CFG.spankSpam) { S.lastSpank = S.tick; return spill("spank spam"); }
+    S.lastSpank = S.tick;
+  }
+  // Side actions raise state at a fixed fraction of gain; they do
+  // NOT store reservoir and produce no milk (SPEC §2.4).
+  const base = kind === "caress" ? CFG.meterCaress : CFG.meterSpank;
+  S.meter = Math.min(100, S.meter + base * 0.5 * effGain());
+  stepExpression();
+  log(kind === "caress" ? "💗 Caress — she leans in. State rises, no milk." : "🍑 Spank — state jumps. Too often = spill.");
+  blip(kind === "caress" ? 520 : 300, 0.08);
+}
+
+function win() {
+  if (S.won) return;
+  S.won = true;
+  document.getElementById("winText").textContent =
+    `Filled in ${(S.tick / 60).toFixed(1)}s of fixed-step time · ${S.spills} spills · ${S.climaxes} climaxes · ${(S.totalProduced).toFixed(0)} total produced.`;
+  document.getElementById("winOverlay").classList.remove("hidden");
+  blip(990, 0.3);
+}
+
+// ---- Tiny WebAudio blips (synthesized; no audio files, ever) -------
+let audioCtx = null;
+function blip(freq, dur) {
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.frequency.value = freq; o.type = "sine";
+    g.gain.setValueAtTime(0.12, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    o.connect(g).connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + dur);
+  } catch (e) { /* audio is garnish; silence is fine */ }
+}
+
+// ---- Rendering: reads the sim, writes the DOM/SVG. Owns nothing. --
+const $ = id => document.getElementById(id);
+let handTimer = 0;
+function showHand(hand) {
+  $("handL").setAttribute("opacity", hand === "left" || hand === "both" ? 1 : 0);
+  $("handR").setAttribute("opacity", hand === "right" || hand === "both" ? 1 : 0);
+  handTimer = 10;
+}
+function flashHearts() { $("hearts").setAttribute("opacity", 1); setTimeout(() => { if (S.expr < 4) $("hearts").setAttribute("opacity", 0); }, 900); }
+function lockedFeedback(id) { const b = $(id); b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake"); log("🔒 Still locked — raise her state first."); }
+
+function render() {
+  // Gauges
+  const bottleH = (S.bottle / CFG.bottleCapacity) * 150;
+  $("bottleFill").setAttribute("y", 180 - bottleH); $("bottleFill").setAttribute("height", bottleH);
+  $("bottleText").textContent = `${S.bottle.toFixed(0)} / 1000`;
+  $("meterFill").style.width = S.meter + "%"; $("meterText").textContent = S.meter.toFixed(0);
+  $("exprText").textContent = EXPRESSIONS[S.expr] + (inRefractory() ? " (refractory)" : "");
+  $("resFill").style.width = (fullness() * 100) + "%";
+  $("resText").textContent = `${S.reservoir.toFixed(0)} / ${profile.reservoirCapacity} (fullness ${(fullness() * 100).toFixed(0)}%)`;
+  $("comboText").textContent = S.combo; $("spillText").textContent = S.spills;
+  $("climaxText").textContent = S.climaxes;
+  $("statusText").textContent = S.won ? "bottle full!" : inRefractory() ? "refractory — sensitivity halved" : S.started ? "playing" : "ready";
+  const bucketH = Math.min(52, (S.totalProduced / CFG.bottleCapacity) * 52);
+  $("bucketFill").setAttribute("y", 500 - bucketH); $("bucketFill").setAttribute("height", bucketH);
+  // Chest: base scale grows with FULLNESS (the reservoir made
+  // visible), bounce comes from the spring, squeeze compresses.
+  const chestScale = 1 + fullness() * 0.16 + S.springX * 0.10 - S.squeeze * 0.06;
+  $("chest").setAttribute("transform", `scale(${chestScale.toFixed(3)})`);
+  $("bell").setAttribute("transform", `rotate(${(S.springX * 18).toFixed(1)} 600 300)`);
+  // Tail sway: slow sine, livelier with state.
+  const sway = Math.sin(S.tick / 28) * (4 + S.expr * 2.2);
+  $("tail").setAttribute("transform", `rotate(${sway.toFixed(1)})`);
+  if (handTimer > 0 && --handTimer === 0) { $("handL").setAttribute("opacity", 0); $("handR").setAttribute("opacity", 0); }
+  // Face layers by state (SPEC §7 grammar): open → heavy-lidded →
+  // gaze-up → melted torogao; blush deepens from Smiling on;
+  // sparkles appear at Flushed and multiply; hearts at Ecstatic.
+  // Cross-fades are CSS transitions on opacity — smooth travel,
+  // never a cut. The eye rule holds in every layer.
+  $("eyesOpen").setAttribute("opacity", S.expr <= 1 ? 1 : 0);
+  $("eyesHalf").setAttribute("opacity", S.expr === 2 ? 1 : 0);
+  $("eyesUp").setAttribute("opacity", S.expr === 3 ? 1 : 0);
+  $("eyesMelt").setAttribute("opacity", S.expr >= 4 ? 1 : 0);
+  $("sparkles").setAttribute("opacity", S.expr >= 2 ? Math.min(1, 0.35 + (S.expr - 2) * 0.3) : 0);
+  $("mouthSmile").setAttribute("opacity", S.expr <= 2 ? 1 : 0);
+  $("mouthOpen").setAttribute("opacity", S.expr >= 3 ? (S.expr >= 4 ? 1 : 0.55) : 0);
+  $("blush").setAttribute("opacity", S.expr >= 1 ? Math.min(1, 0.2 + S.expr * 0.2) : 0);
+  if (S.expr >= 4) $("hearts").setAttribute("opacity", 0.9);
+  else if (S.tick % 50 === 0) $("hearts").setAttribute("opacity", 0);
+  // Beat dot pulses on each ideal interval boundary.
+  $("beatDot").className = (S.started && S.tick % CFG.idealInterval < 5) ? "on" : "";
+  // Unlock affordances
+  toggleLock("btnCaress", S.expr >= 1); toggleLock("btnSpank", S.expr >= 2); toggleLock("btnBoth", S.expr >= 3);
+}
+function toggleLock(id, unlocked) { $(id).classList.toggle("locked", !unlocked); }
+
+// ---- Main loop: accumulate real time, step the sim at 60 Hz fixed.
+// Frame rate can change how OFTEN we render, never what happens —
+// the same discipline torogao-engine's fixed-step evaluation uses.
+let lastTs = 0, acc = 0;
+function frame(ts) {
+  if (lastTs) acc += Math.min(250, ts - lastTs);
+  lastTs = ts;
+  const stepMs = 1000 / CFG.tickHz;
+  while (acc >= stepMs) { step(); acc -= stepMs; }
+  render(); studioRender();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+// ---- Input wiring ---------------------------------------------------
+// Click = gentle (700). Hold ≥ 350 ms = hard (950, over the ceiling).
+function bindSqueeze(id, hand) {
+  let downAt = 0;
+  const el = $(id);
+  el.addEventListener("pointerdown", () => { downAt = performance.now(); });
+  el.addEventListener("pointerup", () => squeeze(hand, performance.now() - downAt >= 350 ? 950 : 700));
+}
+bindSqueeze("btnL", "left"); bindSqueeze("btnR", "right"); bindSqueeze("btnBoth", "both");
+$("btnCaress").addEventListener("click", () => sideAction("caress"));
+$("btnSpank").addEventListener("click", () => sideAction("spank"));
+window.addEventListener("keydown", e => {
+  if (e.repeat) return;
+  const pressure = e.shiftKey ? 950 : 700;
+  if (e.key === "a" || e.key === "A") squeeze("left", pressure);
+  if (e.key === "l" || e.key === "L") squeeze("right", pressure);
+});
+$("startBtn").addEventListener("click", () => { S.started = true; $("titleOverlay").classList.add("hidden"); log("Session started. First squeeze sets the beat — then hold 500 ms tempo."); blip(520, 0.1); });
+$("againBtn").addEventListener("click", () => location.reload());
+
+// Sensitivity dial wiring: the profile is data; the dial edits data.
+function setPreset(name, btn) {
+  profile = { ...PRESETS[name] };
+  if (S.reservoir > profile.reservoirCapacity) S.reservoir = profile.reservoirCapacity;
+  $("gain").value = profile.gain; $("thr").value = profile.threshold;
+  $("gainVal").textContent = profile.gain.toFixed(2); $("thrVal").textContent = profile.threshold;
+  document.querySelectorAll(".preset").forEach(b => b.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+  log(`🎚 Profile: gain ${profile.gain}, threshold ${profile.threshold}, reservoir cap ${profile.reservoirCapacity}.`);
+}
+$("presetHigh").addEventListener("click", e => setPreset("high", e.target));
+$("presetBal").addEventListener("click", e => setPreset("balanced", e.target));
+$("presetLow").addEventListener("click", e => setPreset("low", e.target));
+$("gain").addEventListener("input", e => { profile.gain = parseFloat(e.target.value); $("gainVal").textContent = profile.gain.toFixed(2); document.querySelectorAll(".preset").forEach(b => b.classList.remove("active")); });
+$("thr").addEventListener("input", e => { profile.threshold = parseInt(e.target.value, 10); $("thrVal").textContent = profile.threshold; document.querySelectorAll(".preset").forEach(b => b.classList.remove("active")); });
+
+function log(msg) {
+  const div = document.createElement("div");
+  div.textContent = msg;
+  const box = $("log"); box.prepend(div);
+  while (box.children.length > 6) box.lastChild.remove();
+}
+
+/* =====================================================================
+   STUDIO MODE — authoring the squeeze parameter as a keyform track.
+   The model is milking_core::authoring in miniature: keyforms,
+   easing, a wrap segment back to the first value, loop closure
+   (end == start, or the loop pops), tempo scoring, and a bake.
+   ===================================================================== */
+const studio = {
+  keys: [ { ms: 0, v: 0 }, { ms: 400, v: 1 }, { ms: 1000, v: 0 } ], // a closed starter loop
+  previewing: false, phase: 0, drag: -1,
+};
+const EASING = {
+  linear: t => t,
+  smooth: t => t * t * (3 - 2 * t),
+  easeinout: t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  hold: () => 0,
+};
+function studioCycle() { return parseInt($("cycleMs").value, 10) || 1000; }
+function studioEval(phase) {
+  const keys = [...studio.keys].sort((a, b) => a.ms - b.ms);
+  const cycle = studioCycle(), ease = EASING[$("easing").value];
+  if (!keys.length) return 0;
+  if (phase <= keys[0].ms) return keys[0].v;
+  for (let i = 0; i + 1 < keys.length; i++) {
+    const a = keys[i], b = keys[i + 1];
+    if (phase <= b.ms) { const t = (phase - a.ms) / (b.ms - a.ms); return a.v + (b.v - a.v) * ease(t); }
+  }
+  const last = keys[keys.length - 1], span = cycle - last.ms;
+  if (span <= 0) return last.v;
+  const t = (phase - last.ms) / span;
+  return last.v + (keys[0].v - last.v) * ease(t); // wrap segment → closure lives here
+}
+function studioScore() {
+  const keys = [...studio.keys].sort((a, b) => a.ms - b.ms);
+  if (keys.length < 2) return "Place at least two keyforms.";
+  const start = keys[0].v;
+  const end = keys[keys.length - 1].ms === studioCycle() ? keys[keys.length - 1].v : start; // wrap lands on start
+  const closed = Math.abs(end - start) <= 1e-9;
+  const ratio = studioCycle() / 1000, logErr = Math.abs(Math.log2(ratio));
+  const tempo = Math.max(0, Math.round(100 * (1 - logErr)));
+  return `Loop closure: <b class="${closed ? "pass" : "fail"}">${closed ? "PASS" : "FAIL"} — end ${end.toFixed(2)} vs start ${start.toFixed(2)}</b> · Tempo: <b>${tempo}/100</b> vs the 1000 ms cycle`;
+}
+const sc = $("studioCanvas"), sctx = sc.getContext("2d");
+function studioRender() {
+  const W = sc.width, H = sc.height, cycle = studioCycle();
+  sctx.clearRect(0, 0, W, H);
+  sctx.strokeStyle = "#57456b"; sctx.beginPath(); sctx.moveTo(0, H - 20); sctx.lineTo(W, H - 20); sctx.stroke();
+  // the curve, sampled at bake resolution (10 ms steps)
+  sctx.strokeStyle = "#ff2e88"; sctx.lineWidth = 2; sctx.beginPath();
+  for (let x = 0; x <= W; x += 4) {
+    const phase = (x / W) * cycle, v = studioEval(phase);
+    const y = H - 20 - v * (H - 45);
+    x === 0 ? sctx.moveTo(x, y) : sctx.lineTo(x, y);
+  }
+  sctx.stroke(); sctx.lineWidth = 1;
+  // closure gap: start value vs end value markers
+  const y0 = H - 20 - studioEval(0) * (H - 45), y1 = H - 20 - studioEval(cycle - 1) * (H - 45);
+  sctx.fillStyle = "#7dff9a"; sctx.beginPath(); sctx.arc(3, y0, 5, 0, 7); sctx.fill();
+  sctx.fillStyle = Math.abs(y0 - y1) < 2 ? "#7dff9a" : "#ff7d7d";
+  sctx.beginPath(); sctx.arc(W - 3, y1, 5, 0, 7); sctx.fill();
+  // keyforms
+  for (const k of studio.keys) {
+    const x = (k.ms / cycle) * W, y = H - 20 - k.v * (H - 45);
+    sctx.fillStyle = "#ffd9e8"; sctx.beginPath(); sctx.arc(x, y, 6, 0, 7); sctx.fill();
+    sctx.strokeStyle = "#ff2e88"; sctx.stroke();
+  }
+  // preview playhead + drive the game chest spring with the curve
+  if (studio.previewing) {
+    studio.phase = (studio.phase + 16.7) % cycle;
+    const x = (studio.phase / cycle) * W;
+    sctx.strokeStyle = "#ffe9a8"; sctx.beginPath(); sctx.moveTo(x, 8); sctx.lineTo(x, H - 20); sctx.stroke();
+    const v = studioEval(studio.phase);
+    $("chest").setAttribute("transform", `scale(${(1 + v * 0.14).toFixed(3)})`);
+  }
+  $("studioScore").innerHTML = studioScore();
+}
+function canvasPos(e) {
+  const r = sc.getBoundingClientRect();
+  return { x: (e.clientX - r.left) * (sc.width / r.width), y: (e.clientY - r.top) * (sc.height / r.height) };
+}
+sc.addEventListener("pointerdown", e => {
+  const { x, y } = canvasPos(e), cycle = studioCycle(), H = sc.height;
+  const v = Math.max(0, Math.min(1, (H - 20 - y) / (H - 45)));
+  const ms = Math.round((x / sc.width) * cycle / 10) * 10;
+  const near = studio.keys.findIndex(k => Math.abs(k.ms - ms) < 40);
+  if (near >= 0 && Math.abs(((H - 20 - studio.keys[near].v * (H - 45))) - y) < 14) {
+    if (e.shiftKey || e.button === 2) { studio.keys.splice(near, 1); return; } // shift-click deletes
+    studio.drag = near; return;
+  }
+  studio.keys.push({ ms, v: Math.round(v * 100) / 100 });
+  studio.keys.sort((a, b) => a.ms - b.ms);
+});
+sc.addEventListener("pointermove", e => {
+  if (studio.drag < 0) return;
+  const { x, y } = canvasPos(e), cycle = studioCycle(), H = sc.height;
+  const k = studio.keys[studio.drag];
+  k.ms = Math.max(0, Math.min(cycle, Math.round((x / sc.width) * cycle / 10) * 10));
+  k.v = Math.max(0, Math.min(1, Math.round(((H - 20 - y) / (H - 45)) * 100) / 100));
+});
+window.addEventListener("pointerup", () => { studio.drag = -1; studio.keys.sort((a, b) => a.ms - b.ms); });
+sc.addEventListener("contextmenu", e => e.preventDefault());
+$("previewBtn").addEventListener("click", () => { studio.previewing = !studio.previewing; $("previewBtn").textContent = studio.previewing ? "⏸ Preview loop" : "▶ Preview loop"; });
+$("clearBtn").addEventListener("click", () => { studio.keys = []; });
+$("cycleMs").addEventListener("change", () => { studio.keys = studio.keys.filter(k => k.ms <= studioCycle()); });
+log("Welcome. Press start, then squeeze on the beat. Open Studio Mode when you're ready to author the loop yourself.");
+</script>
+</body>
+</html>

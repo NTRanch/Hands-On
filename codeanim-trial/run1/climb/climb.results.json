@@ -1,0 +1,8 @@
+{
+ "motion": "climb",
+ "frames": 96,
+ "fps": 16,
+ "render_wall_s": 28.41,
+ "loop_seam_meanabsdiff": 3.9647,
+ "median_interframe_meanabsdiff": 0.3416
+}

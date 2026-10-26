@@ -1,0 +1,11 @@
+Hands-On
+Copyright (c) 2026, Nice Thoughts Ranch
+
+Hands-On is an original work of Nice Thoughts Ranch: the game,
+its cast, its curriculum, and its trial records were authored
+for this project and are distributed under the BSD 2-Clause
+License (see LICENSE).
+
+The codeanim trial under codeanim-trial/ renders every frame
+from this project's own vector stage art (stage.svg, parts/).
+No third-party assets are bundled with this repository.

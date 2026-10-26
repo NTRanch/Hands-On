@@ -1,0 +1,40 @@
+/* Hands-On book theme — studio identity: black ground, hot pink.
+   Overrides the mdBook "coal" built-in theme variables only;
+   local system font stacks, no external assets. */
+
+.coal {
+    --bg: #000000;
+    --fg: #f5eef2;
+
+    --sidebar-bg: #0d0208;
+    --sidebar-fg: #e3cfda;
+    --sidebar-non-existant: #6e5570;
+    --sidebar-active: #ff2e88;
+    --sidebar-spacer: #2b0a1a;
+    --sidebar-header-border-color: #ff2e88;
+
+    --scrollbar: var(--sidebar-fg);
+
+    --icons: #b08aa0;
+    --icons-hover: #ffd3e6;
+
+    --links: #ff5ea2;
+
+    --inline-code-color: #ffc2da;
+    --code-bg: #160309;
+
+    --theme-popup-bg: #0d0208;
+    --theme-popup-border: #2b0a1a;
+    --theme-hover: #1c0511;
+
+    --quote-bg: #14030c;
+    --quote-border: #2b0a1a;
+
+    --table-border-color: #2b0a1a;
+    --table-header-bg: #1c0511;
+    --table-alternate-bg: #0a0207;
+
+    --searchbar-border-color: #2b0a1a;
+    --searchbar-bg: #f5eef2;
+    --searchbar-fg: #000000;
+}

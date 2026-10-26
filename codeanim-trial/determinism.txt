@@ -1,0 +1,1 @@
+PASS: 204/204 artifacts byte-identical across twin runs (*.results.json excluded: wall-clock logs)

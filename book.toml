@@ -1,0 +1,14 @@
+[book]
+title = "Hands-On — Game Book"
+authors = ["Nice Thoughts Ranch"]
+language = "en"
+src = "book/src"
+
+[build]
+build-dir = "book/dist"
+create-missing = false
+
+[output.html]
+default-theme = "coal"
+additional-css = ["book/theme/hands-on.css"]
+git-repository-icon = "fa-github"

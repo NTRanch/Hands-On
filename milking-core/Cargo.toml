@@ -1,0 +1,8 @@
+[package]
+name = "milking-core"
+version = "0.1.0"
+edition = "2024"
+description = "Deterministic fixed-step core for the cowgirl milking teaching minigame: squeeze-cycle simulation, bottle gauge, expression state machine, unlock affordances, and a loop-authoring module. The Torogao port twin of the HTML prototype."
+license = "BSD-2-Clause"
+
+[dependencies]

@@ -1,0 +1,8 @@
+{
+ "motion": "milking",
+ "frames": 32,
+ "fps": 16,
+ "render_wall_s": 12.61,
+ "loop_seam_meanabsdiff": 1.4238,
+ "median_interframe_meanabsdiff": 1.0722
+}

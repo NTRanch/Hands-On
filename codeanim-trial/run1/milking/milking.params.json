@@ -1,0 +1,53 @@
+{
+ "motion": "milking",
+ "frames": 32,
+ "fps": 16,
+ "loop": true,
+ "beat": "4 squeezes per 2 s loop, hands alternate L R L R every 8f",
+ "press_profile_per_beat": [
+  0.15,
+  0.45,
+  0.8,
+  1.0,
+  1.0,
+  0.85,
+  0.5,
+  0.2
+ ],
+ "press_profile_phases": [
+  "approach",
+  "approach",
+  "compress",
+  "compress",
+  "hold",
+  "release",
+  "release",
+  "tail"
+ ],
+ "chest_squash": {
+  "sx": -0.045,
+  "sy": -0.06,
+  "about": "pressed-side pivot"
+ },
+ "chest_jiggle_spring": {
+  "k": 110.0,
+  "c": 8.0,
+  "zeta": 0.38,
+  "drive": "press_total(t), 0.5 s periodic",
+  "warp_amp_px": [
+   1.5,
+   5.0
+  ],
+  "seam_residual": 0.0
+ },
+ "chest_fullness_frozen": 1.03,
+ "tail_counter_spring": {
+  "k": 55.0,
+  "c": 6.5,
+  "drive": "-7deg*press_total + 3.5deg sway",
+  "seam_residual_deg": 0.0
+ },
+ "expression_s_base": 2.1,
+ "expression_s_press_gain": 0.3,
+ "breath_period_s": 2.0
+}

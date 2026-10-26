@@ -1,0 +1,9 @@
+[package]
+name = "hands-on"
+version = "0.1.0"
+edition = "2024"
+description = "hands-on (IDEA-0093): the estate's game-system learning crate. Levels/minigames codify real engine systems; exercise success drives live stimulation feedback on each level's host girl through a shared feedback engine. Level 1 (milking) is built on milking-core; Levels 2-5 are designed, not built."
+license = "BSD-2-Clause"
+
+[dependencies]
+milking-core = { path = "../milking-core" }

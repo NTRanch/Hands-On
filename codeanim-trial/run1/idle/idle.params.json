@@ -1,0 +1,50 @@
+{
+ "motion": "idle",
+ "frames": 64,
+ "fps": 16,
+ "loop": true,
+ "breath": {
+  "period_s": 4.0,
+  "bob_px": 2.2,
+  "scale_amp": 0.006,
+  "chest_micro_scale": 0.01
+ },
+ "blink": {
+  "windows_frames": [
+   [
+    20,
+    26
+   ],
+   [
+    50,
+    56
+   ]
+  ],
+  "depth": 0.92,
+  "profile": "sin(pi*u), eyeHalf as lid"
+ },
+ "look_drift": {
+  "gaze_x_px": 2.0,
+  "gaze_y_px": 0.6,
+  "phase_rad": 1.2,
+  "period_s": 4.0
+ },
+ "hair_sway": {
+  "amp_deg": 1.5,
+  "phase_lag_rad": -0.7,
+  "pivot": [
+   600,
+   168
+  ]
+ },
+ "tail_spring": {
+  "k": 55.0,
+  "c": 6.5,
+  "zeta": 0.44,
+  "drive_amp_deg": 6.0,
+  "drive_period_s": 2.0,
+  "phase_rad": 0.9,
+  "seam_residual_deg": 0.0
+ },
+ "expression_s": 0.0
+}
