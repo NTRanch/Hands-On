@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Codeanim trial on Betsy (Hands-On, House Cel) — 2026-10-26.
+"""Codeanim trial on Opal (Hands-On, House Cel) — 2026-10-26.
 
 Extends the estate codeanim toolchain (ntr-corpus-skeleton/codeanim/
 animate.py: fixed-step springs, seeded closed-form motion, twin-run
-byte-identity) from whole-still warps to LAYERED parts: Betsy's stage
+byte-identity) from whole-still warps to LAYERED parts: Opal's stage
 SVG from game.html is decomposed by svgmini.py into 18 raster layers
 with pivots, and three motion classes are evaluated on a fixed 16 fps
 clock:

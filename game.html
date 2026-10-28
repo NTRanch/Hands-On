@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Betsy — First Milking (hands-on, Level 1)</title>
+<title>Opal — First Milking (hands-on, Level 1)</title>
 <style>
   :root { --pink:#ff2e88; --ink:#14100f; --paper:#fff7ee; --wood:#8a5a2b; }
   * { box-sizing: border-box; }
@@ -53,7 +53,7 @@
 </head>
 <body>
 <header>
-  <h1>Betsy — First Milking</h1>
+  <h1>Opal — First Milking</h1>
   <div class="sub">hands-on · Level 1 · parameters → curves → fixed-step → reaction profiles.
   Squeeze on the beat (<span id="beatDot"></span> every 500 ms): <b>A</b> = left hand, <b>L</b> = right hand. Click = gentle, hold = hard (too hard spills).
   Art: <b>House Cel</b> — flat cel, bold lineart, glossy detailed eyes. The eye rule: pupils are hearts; the iris keeps her own color.</div>
@@ -101,7 +101,7 @@
       <defs>
         <!-- HOUSE CEL eyes (SPEC §7). One eye, centered on (0,0),
              instanced per side with <use>. THE EYE RULE: the pupil
-             is a HEART in every state; the iris stays Betsy's
+             is a HEART in every state; the iris stays Opal's
              canonical warm amber-brown — heart is shape only.
              States differ by lid, gaze, catchlights and pupil
              luminosity — never by pupil shape or iris color. -->
@@ -219,7 +219,7 @@
         </g>
       </g>
       <text x="200" y="30" font-size="16" fill="#33404c">rear view</text>
-      <text x="600" y="30" text-anchor="middle" font-size="16" fill="#33404c">front view — Betsy</text>
+      <text x="600" y="30" text-anchor="middle" font-size="16" fill="#33404c">front view — Opal</text>
     </svg>
 
     <div class="actions">
@@ -231,7 +231,7 @@
     </div>
 
     <div class="overlay" id="titleOverlay">
-      <h2>Betsy — First Milking</h2>
+      <h2>Opal — First Milking</h2>
       <p>Fill the bottle. Squeeze on the 500&nbsp;ms beat — steady tempo fills, mashing spills.
       Side actions raise her state and unlock as she warms up. Tune her sensitivity and feel the lesson:
       a reaction profile is just gain, threshold, and a reservoir.</p>
@@ -267,7 +267,7 @@
 <script>
 "use strict";
 /* =====================================================================
-   Betsy — First Milking. The HTML twin of milking-core (Rust).
+   Opal — First Milking. The HTML twin of milking-core (Rust).
    The mechanism is identical in both: a FIXED-STEP simulation owns
    every number; rendering only reads. Constants match
    milking-core/src/sim.rs — change them in both places or neither.

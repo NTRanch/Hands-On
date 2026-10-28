@@ -2,7 +2,7 @@
       <defs>
         <!-- HOUSE CEL eyes (SPEC §7). One eye, centered on (0,0),
              instanced per side with <use>. THE EYE RULE: the pupil
-             is a HEART in every state; the iris stays Betsy's
+             is a HEART in every state; the iris stays Opal's
              canonical warm amber-brown — heart is shape only.
              States differ by lid, gaze, catchlights and pupil
              luminosity — never by pupil shape or iris color. -->
@@ -120,5 +120,5 @@
         </g>
       </g>
       <text x="200" y="30" font-size="16" fill="#33404c">rear view</text>
-      <text x="600" y="30" text-anchor="middle" font-size="16" fill="#33404c">front view — Betsy</text>
+      <text x="600" y="30" text-anchor="middle" font-size="16" fill="#33404c">front view — Opal</text>
     </svg>

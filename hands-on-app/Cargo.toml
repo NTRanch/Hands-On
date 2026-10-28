@@ -1,0 +1,84 @@
+[package]
+name = "hands-on-app"
+version = "0.1.0"
+edition = "2024"
+description = "hands-on-app: the touch-first egui front-end for Hands-On (IDEA-0093). Renders the playable levels (P1 First Milking, the P4 Loop Studio slice) from the platform-free milking-core simulation; the TUI in ../hands-on stays the desktop terminal front-end. Targets desktop and Android from the same crate."
+license = "BSD-2-Clause"
+
+# cdylib so the Android build can load the crate as the
+# NativeActivity library; rlib so the desktop binary and the
+# tests link it the ordinary way.
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+hands-on = { path = "../hands-on" }
+milking-core = { path = "../milking-core" }
+
+# Audio playback (2026-10-27 full-game pass, D-158). FLAGGED
+# new dependency, per the pure-Rust discipline: rodio itself is
+# Rust, but its backend cpal reaches the OS audio stack through
+# platform crates that are FFI by nature (alsa-sys on Linux,
+# oboe-sys on Android, CoreAudio on macOS). The `wav` feature
+# keeps decoding to hound (pure Rust) and drops the
+# flac/vorbis/mp3 decoders — the game ships WAV only. Nothing
+# else in the workspace gains a dependency; milking-core and
+# hands-on stay zero-dep.
+# `cpal-shared-stdcxx`: on Android, oboe's C++ must link the
+# NDK's shared libc++ (the static archive leaves libc++abi
+# symbols — __cxa_guard_acquire, std::terminate — undefined at
+# link). The APK pipeline bundles libc++_shared.so alongside
+# the game's .so (see packaging/build-apk.sh).
+rodio = { version = "0.18", default-features = false, features = ["wav", "cpal-shared-stdcxx"] }
+
+# Opal art decoding (the Opal commission, 2026-10-27): her
+# expression portraits and idle frames ship as embedded JPEGs
+# under assets/opal/, decoded at runtime on every target —
+# the crate's first unconditional image dependency. Desktop
+# also uses image for screenshot export (PNG encode).
+image = { version = "0.25", default-features = false, features = ["jpeg", "png"] }
+
+# eframe is declared per-target because the Android build
+# needs a different feature set than the desktop build (the
+# E0425 fix, game-wave 2026-10-27 — two layers, both are
+# feature selection, no patch and no upgrade):
+#
+# Layer 1 — the activity backend. eframe forwards its
+# android-*-activity features through egui-winit to winit's
+# android-activity features. android-activity 0.6.1 has NO
+# default backend: with neither feature enabled its
+# `activity_impl` module (cfg_attr-gated on the backend
+# features) does not exist, so the build fails with E0583
+# (file not found for module `activity_impl`), the crate's
+# own compile_error! ("Either game-activity or
+# native-activity must be enabled"), and E0425 for every
+# backend type input.rs names (PointerImpl, PointersIterImpl,
+# PointerHistoryIterImpl, HistoricalPointerImpl). The lawful
+# backend is native-activity: packaging/AndroidManifest.xml
+# declares android.app.NativeActivity, and this Gradle-free
+# pipeline ships no GameActivity AAR for the alternative.
+#
+# Layer 2 — accesskit. eframe's default set includes
+# `accesskit`, and eframe carries a compile_error! guard:
+# on Android, accesskit is only available with
+# android-GAME-activity (an accesskit_winit limitation).
+# With native-activity chosen, the Android declaration drops
+# the defaults and re-enables what the app uses (glow
+# renderer, default fonts). Desktop keeps the full default
+# set, accesskit included — accessibility is only lost
+# where the platform stack cannot provide it.
+[target.'cfg(target_os = "android")'.dependencies]
+eframe = { version = "0.32", default-features = false, features = [
+    "android-native-activity",
+    "default_fonts",
+    "glow",
+] }
+# The same backend, named at the direct dependency the
+# crate's android_main entry takes its AndroidApp type from
+# — the two declarations agree, and the graph holds one
+# android-activity instance.
+android-activity = { version = "0.6", features = ["native-activity"] }
+
+# Desktop eframe (full defaults, accesskit included).
+[target.'cfg(not(target_os = "android"))'.dependencies]
+eframe = "0.32"

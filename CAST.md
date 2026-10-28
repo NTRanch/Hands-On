@@ -131,7 +131,7 @@ lines are part of every record, not a garnish on some.
 **A girl is a record first.** Art exists only by later,
 separately gated production (anchor → expression ladder →
 the Owner's eye), exactly as the estate's cast work is gated
-elsewhere. Today exactly one girl has produced art: Betsy
+elsewhere. Today exactly one girl has produced art: Opal
 (P1, the `game.html` SVG). Every other record in this file is
 **record only**, and says so.
 
@@ -153,7 +153,7 @@ in outfit, setting, or framing — anywhere, at any rung.
 
 | Level | Girl | Kink / dynamic | Lane | Rung |
 |---|---|---|---|---|
-| P1 First Milking | Betsy | milking (no canon entry — the crate's own) | House Cel | Playroom 1 |
+| P1 First Milking | Opal | milking (no canon entry — the crate's own) | House Cel | Playroom 1 |
 | P2 Fixed-Step Rhythm | Sable | B-45 gooning (beat-grid trance) | House Cel | Playroom 2 |
 | P3 Stage Systems | Vega | B-12 exhibitionism (the club floor) | Pony Painterly | Playroom 3 |
 | P4 Loop Studio | Mireille | B-54 deep subspace (the seamless loop) | House Cel | Playroom 4 |
@@ -239,7 +239,7 @@ the Owner should see, with the cheap fix named:
 
 - **Rung / prerequisites:** Playroom rung 1 — the fixed-step
   loop and the squeeze. Assumes nothing; this is the door.
-- **Host:** Betsy.
+- **Host:** Opal.
 - **Identity:** an adult woman; the cowgirl hostess of the
   teaching farm. Warm round face, easy grin; long warm-brown
   hair with caramel highlights (the `game.html` art: base
@@ -265,7 +265,7 @@ the Owner should see, with the cheap fix named:
   middling rate and the refractory is a patient five seconds
   of ticks.
 - **Style lane:** House Cel.
-- **Art status:** **built** — original SVG Betsy in
+- **Art status:** **built** — original SVG Opal in
   `game.html`, both views, four authored eye layers; the only
   produced art in this cast.
 - **Evaluation:**
@@ -438,9 +438,9 @@ the Owner should see, with the cheap fix named:
   peak, recover, author again — faster than anyone.
 - **Style lane:** House Cel.
 - **Art status:** record only. **Teaching-material note:**
-  the playable slice's material is **Betsy's** loop (seed
-  `betsy-loop-a1`, twin-run hash `88dd763631bc07f9`) even
-  though Mireille hosts the level — the slice runs on Betsy;
+  the playable slice's material is **Opal's** loop (seed
+  `opal-loop-a1`, twin-run hash `88dd763631bc07f9`) even
+  though Mireille hosts the level — the slice runs on Opal;
   Mireille hosts the level's full design.
 - **Evaluation:**
   - *Animation to judge:* her idle (hands turning an
@@ -1204,7 +1204,7 @@ Each lesson's host rides that dynamic in her own flavor.
   the registry (and re-pointing P6–P9 and S1–S8 at them) is
   the follow-on pass, deliberately not done here, so the
   Owner reviews the cast as a table before it becomes data.
-- It is not art: beyond Betsy's built SVG, nothing here has
+- It is not art: beyond Opal's built SVG, nothing here has
   been drawn. Each record is the spec a later gated
   production will be built — and eye-gated — against.
 - It is not a verdict: every Evaluation block reads

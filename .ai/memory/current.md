@@ -17,7 +17,7 @@
   `rust-toolchain.toml`.
 - Built and playable: Level P1 (First Milking) and the P4
   Loop Studio slice (loop closure + bake + twin-run hash, on
-  Betsy). `game.html` is P1's visual prototype. The other
+  Opal). `game.html` is P1's visual prototype. The other
   fifteen levels are designed in CURRICULUM.md, not built.
 - Cast: CAST.md carries seventeen records (P1–P9, S1–S8),
   one distinct girl per level, each with identity, palette,

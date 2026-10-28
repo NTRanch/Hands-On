@@ -95,6 +95,17 @@ impl ExpressionMachine {
         Self::default()
     }
 
+    /// A machine already standing at `state` — the save
+    /// system's restore path. Ordinary play changes state only
+    /// through `step_toward` and `settle`; this constructor
+    /// exists so a restored sim resumes on exactly the face it
+    /// was saved wearing (hysteresis makes re-deriving it from
+    /// the meter lossy inside a band).
+    #[must_use]
+    pub fn from_state(state: Expression) -> Self {
+        Self { state }
+    }
+
     #[must_use]
     pub fn state(&self) -> Expression {
         self.state

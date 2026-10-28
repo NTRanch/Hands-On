@@ -8,9 +8,11 @@
 //! Two tracks (Amendment 8): the **Playroom**, which holds the
 //! play levels and the deterministic-animation levels in one
 //! sequence (P1..P9), and **the Study**, the Rust-mastery track
-//! (Lessons S1..S8, designed only). Built: P1 and the P4 Loop
-//! Studio slice. Everything else is registry data the menu shows
-//! and the curriculum designs, and selecting it says so honestly.
+//! (Lessons S1..S8). All seventeen are built: P1 and the P4
+//! Loop Studio slice keep their bespoke loops in `main.rs`,
+//! and the other fifteen are hosted by the session layer
+//! (`session` / `play` / `study`), each with a scripted route
+//! that reaches its success state.
 
 use milking_core::sim::SensitivityProfile;
 
@@ -34,7 +36,7 @@ pub enum Track {
     Playroom,
     /// The Study: Rust mastery — you are summoned for a lesson
     /// and the compiler corrects you at the desk (S1..S8).
-    /// Codified; designed only in this pass.
+    /// Codified first, then built by the session layer.
     Study,
 }
 
@@ -51,7 +53,7 @@ pub struct LevelDescriptor {
     pub source_system: &'static str,
     /// Who hosts it.
     pub host: HostGirl,
-    /// Whether an engine exists yet. P1 and the P4 slice only.
+    /// Whether an engine exists yet. All seventeen do.
     pub built: bool,
 }
 
@@ -90,7 +92,7 @@ pub struct MilkingLevel {
 }
 
 impl MilkingLevel {
-    /// Betsy's level, with her balanced default profile.
+    /// Opal's level, with her balanced default profile.
     #[must_use]
     pub fn new() -> Self {
         Self {
@@ -100,7 +102,7 @@ impl MilkingLevel {
                 title: "First Milking — Parameters & Reaction Profiles",
                 source_system: "Torogao parameter model + reaction profiles",
                 host: HostGirl {
-                    name: "Betsy",
+                    name: "Opal",
                     sketch: "cowgirl hostess of the teaching farm; patient, teasing, hard to rush",
                     profile: SensitivityProfile::default(),
                 },
@@ -140,7 +142,7 @@ pub fn playroom_levels() -> Vec<LevelDescriptor> {
                 sketch: "night-drive DJ who lives on the beat grid; twitchy, low threshold",
                 profile: SensitivityProfile::high(),
             },
-            built: false,
+            built: true,
         },
         LevelDescriptor {
             track: Track::Playroom,
@@ -152,7 +154,7 @@ pub fn playroom_levels() -> Vec<LevelDescriptor> {
                 sketch: "Strobe club stage manager; runs the scene from the booth — slow build, deep reservoir, enormous payoff when the scene holds together",
                 profile: SensitivityProfile::low(),
             },
-            built: false,
+            built: true,
         },
         LevelDescriptor {
             track: Track::Playroom,
@@ -161,7 +163,7 @@ pub fn playroom_levels() -> Vec<LevelDescriptor> {
             source_system: "Torogao animation authoring · Lumen rig parameter space (INP1 generation)",
             host: HostGirl {
                 name: "Mireille",
-                sketch: "stop-motion animator; hosts the animation levels (the playable slice runs on Betsy)",
+                sketch: "stop-motion animator; hosts the animation levels (the playable slice runs on Opal)",
                 profile: mireille_profile(),
             },
             built: true,
@@ -176,7 +178,7 @@ pub fn playroom_levels() -> Vec<LevelDescriptor> {
                 sketch: "gatekeeper of the router shrine; exacting — spills cost her trust fast",
                 profile: vigil_profile(),
             },
-            built: false,
+            built: true,
         },
         LevelDescriptor {
             track: Track::Playroom,
@@ -188,7 +190,7 @@ pub fn playroom_levels() -> Vec<LevelDescriptor> {
                 sketch: "border inspector of formats; nothing crosses without a class",
                 profile: vigil_profile(),
             },
-            built: false,
+            built: true,
         },
         LevelDescriptor {
             track: Track::Playroom,
@@ -200,7 +202,7 @@ pub fn playroom_levels() -> Vec<LevelDescriptor> {
                 sketch: "gif-loop obsessive; counts frames the way she counts beats",
                 profile: SensitivityProfile::high(),
             },
-            built: false,
+            built: true,
         },
         LevelDescriptor {
             track: Track::Playroom,
@@ -212,7 +214,7 @@ pub fn playroom_levels() -> Vec<LevelDescriptor> {
                 sketch: "runs the booth where motion curves leave as haptic tracks",
                 profile: SensitivityProfile::low(),
             },
-            built: false,
+            built: true,
         },
         LevelDescriptor {
             track: Track::Playroom,
@@ -224,22 +226,37 @@ pub fn playroom_levels() -> Vec<LevelDescriptor> {
                 sketch: "animator again, this time with a camera that orbits",
                 profile: mireille_profile(),
             },
-            built: false,
+            built: true,
         },
     ]
 }
 
+/// The current name for a host, resolving the legacy name a
+/// pre-rename save or settings file may still carry. The P1
+/// hostess was renamed by Owner ruling (D-195, 2026-10-27):
+/// files written before the rename persist her old name;
+/// they load under the new name and the next write persists
+/// it. This alias is the ONLY place the old name survives in
+/// shipped code — it exists so old saves keep working.
+#[must_use]
+pub fn canonical_host_name(raw: &str) -> &str {
+    match raw {
+        "Betsy" => "Opal",
+        other => other,
+    }
+}
+
 /// The Study (Amendment 8): Rust mastery as Lessons S1..S8,
-/// codified as first-class registry entries and shown in the
-/// menu as locked/designed. NONE are built in this pass — the
-/// designs, chapter maps, and Torogao use cases live in
-/// CURRICULUM.md. The framing: you are summoned to the Study for
-/// a lesson; the compiler corrects you at the desk. Hosts are
+/// codified as first-class registry entries. The designs,
+/// chapter maps, and Torogao use cases live in CURRICULUM.md;
+/// the playable lessons live in the session layer (`study`).
+/// The framing: you are summoned to the Study for a lesson;
+/// the compiler corrects you at the desk. Hosts are
 /// the Playroom girls; each lesson's feedback reuses her profile.
 #[must_use]
 pub fn study_levels() -> Vec<LevelDescriptor> {
-    let betsy = HostGirl {
-        name: "Betsy",
+    let opal = HostGirl {
+        name: "Opal",
         sketch: "hosts the parsing lesson in the Study: patient with first ownership mistakes",
         profile: SensitivityProfile::default(),
     };
@@ -269,8 +286,8 @@ pub fn study_levels() -> Vec<LevelDescriptor> {
             id: 1,
             title: "Own the Puppet — Ownership, Borrowing, Lifetimes",
             source_system: "Rust Book ch. 4, 5, 6, 10 · torogao-format parsing",
-            host: betsy,
-            built: false,
+            host: opal,
+            built: true,
         },
         LevelDescriptor {
             track: Track::Study,
@@ -278,7 +295,7 @@ pub fn study_levels() -> Vec<LevelDescriptor> {
             title: "Fail Closed — Typed Errors & Contracts",
             source_system: "Rust Book ch. 9, 10 · moc3 importer/exporter gates",
             host: vigil,
-            built: false,
+            built: true,
         },
         LevelDescriptor {
             track: Track::Study,
@@ -286,7 +303,7 @@ pub fn study_levels() -> Vec<LevelDescriptor> {
             title: "The Accumulator — Fixed-Step Engine Arithmetic",
             source_system: "Rust Book ch. 3, 13 · torogao-engine fixed step",
             host: sable,
-            built: false,
+            built: true,
         },
         LevelDescriptor {
             track: Track::Study,
@@ -294,7 +311,7 @@ pub fn study_levels() -> Vec<LevelDescriptor> {
             title: "Hold the Frame — Renderer Resource Ownership",
             source_system: "Rust Book ch. 15, 16 · winit/wgpu/egui renderer",
             host: mireille,
-            built: false,
+            built: true,
         },
         LevelDescriptor {
             track: Track::Study,
@@ -302,7 +319,7 @@ pub fn study_levels() -> Vec<LevelDescriptor> {
             title: "Bounded Queues — The Haptics Router",
             source_system: "Rust Book ch. 10, 16, 19 · torogao-haptics router",
             host: vigil,
-            built: false,
+            built: true,
         },
         LevelDescriptor {
             track: Track::Study,
@@ -310,7 +327,7 @@ pub fn study_levels() -> Vec<LevelDescriptor> {
             title: "Async Borders — MCP + A2A Surfaces",
             source_system: "Rust Book ch. 17 · MCP/A2A schema discipline",
             host: sable,
-            built: false,
+            built: true,
         },
         LevelDescriptor {
             track: Track::Study,
@@ -318,7 +335,7 @@ pub fn study_levels() -> Vec<LevelDescriptor> {
             title: "Track the Performer — State Machines & Calibration",
             source_system: "Rust Book ch. 6, 19 · live mode tracking/interop",
             host: vega,
-            built: false,
+            built: true,
         },
         LevelDescriptor {
             track: Track::Study,
@@ -326,7 +343,7 @@ pub fn study_levels() -> Vec<LevelDescriptor> {
             title: "Aftercare — Tests, Review & the Gate Suite",
             source_system: "Rust Book ch. 11 · the capstone: verification after the intensity",
             host: vigil,
-            built: false,
+            built: true,
         },
     ]
 }
@@ -344,11 +361,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn playroom_track_is_one_sequence_of_nine_with_two_built() {
+    fn playroom_track_is_one_sequence_of_nine_all_built() {
         let reg = playroom_levels();
         assert_eq!(reg.len(), 9);
-        assert_eq!(reg.iter().filter(|l| l.built).count(), 2);
-        assert_eq!(reg[0].host.name, "Betsy");
+        assert_eq!(reg.iter().filter(|l| l.built).count(), 9);
+        assert_eq!(reg[0].host.name, "Opal");
         assert!(reg[0].built, "P1 is playable");
         assert!(reg[3].built, "P4 Loop Studio's slice is playable");
         assert!(reg.iter().all(|l| l.track == Track::Playroom));
@@ -359,10 +376,10 @@ mod tests {
     }
 
     #[test]
-    fn study_track_is_codified_but_nothing_is_built() {
+    fn study_track_is_codified_and_fully_built() {
         let study = study_levels();
         assert_eq!(study.len(), 8);
-        assert!(study.iter().all(|l| l.track == Track::Study && !l.built));
+        assert!(study.iter().all(|l| l.track == Track::Study && l.built));
         assert_eq!(
             study[7].title, "Aftercare — Tests, Review & the Gate Suite",
             "S8 stays the Aftercare capstone"

@@ -279,7 +279,7 @@ generated video under its own lane rules).
   Strobe and Torogao's Playroom — and the reason P4's loops are
   authored as parameter tables in the first place.
 - **Hands-On application, pending evidence:** a dedicated trial
-  — codeanim on Betsy's layered House Cel art (idle, expression
+  — codeanim on Opal's layered House Cel art (idle, expression
   climb, the milking loop) — is running in parallel with this
   design. This module cites it as the pending evidence for the
   Hands-On application and does not duplicate it; P1/P4
@@ -573,7 +573,7 @@ CAST.md owns names.
   her dynamic is tolerances, pins, and rules with mechanical
   consequences (C17 is her home ground).
 - **X5 — codeanim Studio (proposed-or-fold).** Home for C1's
-  Hands-On exercises, *if* the parallel Betsy codeanim trial's
+  Hands-On exercises, *if* the parallel Opal codeanim trial's
   verdict says the format earns a slot of its own; otherwise
   C1 folds into P4 (Loop Studio), whose authoring model it
   already shares. Coverage needed only if it stands alone: a
@@ -599,7 +599,7 @@ CAST.md owns names.
       X1 proposal marked as proposed.
 - [ ] P4's entry gains the codeanim Route A note (C1):
       adopted policy, the contact-scene boundary stated, and
-      the Betsy trial's verdict recorded when it lands.
+      the Opal trial's verdict recorded when it lands.
 - [ ] P6's entry cross-references B9/B10 (production depth)
       and C7 (version law) as its spiral continuations.
 - [ ] P9's entry: resolve the designed-only boundary against

@@ -25,7 +25,7 @@ estate's contract/limits type). The
 capstone lesson S8 stays **Aftercare** (B-80) — tests, review,
 and verification after the intensity. In this pass only P1 and
 the P4 Loop Studio slice (loop closure + bake + twin-run hash,
-on Betsy) are playable; no Study lesson is built.
+on Opal) are playable; no Study lesson is built.
 
 ## §7.4 Daddy Style — the engineering discipline (a law)
 

@@ -8,7 +8,7 @@ the player does, what the meters do, and how the character's state
 responds. No artwork, character, name, audio, or asset from any
 reference is used. All art in the prototype is original work
 drawn for this build in the estate's House Cel style (§7); the
-character is an original adult creation named **Betsy**. This is
+character is an original adult creation named **Opal**. This is
 an adult game for the estate's adult lane; every character is a
 consenting adult.
 
@@ -17,7 +17,7 @@ consenting adult.
 A Live2D-style milking minigame presented from a static camera in a
 split multiple-view composition:
 
-- **Left view — rear three-quarter:** Betsy leans on a wooden fence
+- **Left view — rear three-quarter:** Opal leans on a wooden fence
   in a farm setting; a bucket sits beneath her and fills as the
   session produces.
 - **Right view — front:** the same character facing the player; this
@@ -26,7 +26,7 @@ split multiple-view composition:
 - **Title screen first:** a title card with "press to start". No
   interaction is live until the session starts.
 
-Betsy's costume reads at a glance: cow ears and small horns, a
+Opal's costume reads at a glance: cow ears and small horns, a
 cow-print outfit, a cowbell at the neck, and a tail that sways with
 its own secondary motion.
 
@@ -42,7 +42,7 @@ its own secondary motion.
    meter) and, in parallel, the **bucket** under the rear view.
 4. Squeezes raise the **state meter** slowly; side actions raise it
    faster but produce no milk.
-5. As state crosses thresholds, Betsy's **expression** advances and
+5. As state crosses thresholds, Opal's **expression** advances and
    previously locked **action buttons unlock**.
 6. The bottle reaching capacity is the **win state**: the session
    ends in a completion card with the final time and spill count.
@@ -187,13 +187,20 @@ A `SensitivityProfile` has four fields:
 | `reservoir_capacity` | Maximum stored volume in the milk reservoir. |
 | `refractory_ticks` | Post-climax window: gain halved, re-trigger impossible. |
 
-Plus a `reservoir_rate`: the fraction of each effective squeeze's
-stimulation that is *stored* in the reservoir instead of only
-passing through. Accumulated stimulation therefore does two
-things at once — it raises the meter, and it **fills her**: the
-reservoir level is a visible fullness parameter in both renderers
-(chest scale in the HTML build, the reservoir bar in the TUI) and a
-stored-volume number in the core.
+Plus a `reservoir_rate`: the retention share of each tick's
+*produced* milk (D-177 semantics, folded in at the landing pass;
+the pre-D-177 wording described a share of stimulation, which the
+D-177 audit showed was not what the model does). Production
+splits on the tick it happens — the expressed share is collected
+into the bottle, and the `reservoir_rate` share is retained in
+the reservoir. The core keeps a per-tick conservation law —
+`total_produced == bottle + reservoir + spilled_away` — and
+climax pays a fraction of the reservoir into the bottle as the
+burst; the un-paid remainder *stays stored*, as the head start
+on the refill. The reservoir level is a visible fullness
+parameter in both renderers (chest scale in the HTML build, the
+reservoir bar in the TUI) and a stored-volume number in the
+core.
 
 ### 5.1 The live dial
 
@@ -258,7 +265,7 @@ nvim-appname/init.lua dedicated alternate-profile template
 Each level is a descriptor: `{ id, title, source system, host
 girl, built? }`, and built levels implement the `Level` trait.
 Each host is an original adult character with **her own default
-SensitivityProfile** — Betsy (P1, balanced), Sable (P2, high),
+SensitivityProfile** — Opal (P1, balanced), Sable (P2, high),
 Vega (P3, low), Mireille (P4, mid), Vigil (P5, exacting).
 Learning her profile is part of the play, because profiles are
 data and data differs per character.
@@ -319,7 +326,7 @@ estate's contract/limits type). The
 capstone lesson S8 stays **Aftercare** (B-80) — tests, review,
 and verification after the intensity. In this pass only P1 and
 the P4 Loop Studio slice (loop closure + bake + twin-run hash,
-on Betsy) are playable; no Study lesson is built.
+on Opal) are playable; no Study lesson is built.
 
 ## 7. Art style — the house style (Amendment 9)
 

@@ -2,7 +2,7 @@
 name = "hands-on"
 version = "0.1.0"
 edition = "2024"
-description = "hands-on (IDEA-0093): the estate's game-system learning crate. Levels/minigames codify real engine systems; exercise success drives live stimulation feedback on each level's host girl through a shared feedback engine. Level 1 (milking) is built on milking-core; Levels 2-5 are designed, not built."
+description = "hands-on (IDEA-0093): the estate's game-system learning crate. Levels/minigames codify real engine systems; exercise success drives live stimulation feedback on each level's host girl through a shared feedback engine. All seventeen levels are built: Level 1 (milking) on milking-core, the rest through the session layer over their milking-core twins."
 license = "BSD-2-Clause"
 
 [dependencies]

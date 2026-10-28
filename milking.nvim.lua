@@ -78,7 +78,7 @@ function M.open_game()
         col = math.floor((vim.o.columns - width) / 2),
         style = 'minimal',
         border = 'rounded',
-        title = ' hands-on — Level 1: Betsy ',
+        title = ' hands-on — Level 1: Opal ',
         title_pos = 'center',
     })
     vim.fn.termopen(bin, {

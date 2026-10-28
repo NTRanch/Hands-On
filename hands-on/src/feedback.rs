@@ -206,9 +206,9 @@ mod tests {
     use super::*;
     use milking_core::sim::{Hand, SensitivityProfile};
 
-    fn betsy() -> HostGirl {
+    fn opal() -> HostGirl {
         HostGirl {
-            name: "Betsy",
+            name: "Opal",
             sketch: "test host",
             profile: SensitivityProfile::high(),
         }
@@ -216,7 +216,7 @@ mod tests {
 
     #[test]
     fn fake_haptic_readout_never_exceeds_the_ceiling() {
-        let mut engine = FeedbackEngine::new(betsy(), Config::default());
+        let mut engine = FeedbackEngine::new(opal(), Config::default());
         for i in 0..40u64 {
             let _ = engine.feed(InputEvent::Squeeze {
                 tick: i * 30,
@@ -229,7 +229,7 @@ mod tests {
 
     #[test]
     fn success_events_move_the_girl_and_log_it() {
-        let mut engine = FeedbackEngine::new(betsy(), Config::default());
+        let mut engine = FeedbackEngine::new(opal(), Config::default());
         engine
             .feed(InputEvent::Squeeze {
                 tick: 0,
@@ -238,7 +238,7 @@ mod tests {
             })
             .unwrap();
         assert!(engine.snapshot().meter > 0.0);
-        assert!(engine.log_tail(1)[0].contains("Betsy"));
+        assert!(engine.log_tail(1)[0].contains("Opal"));
     }
 
     #[test]
@@ -249,13 +249,13 @@ mod tests {
             assert!(line.contains("House Cel"), "{e:?}: {line}");
         }
         assert!(FeedbackEngine::style_line(Expression::Ecstatic).contains("TOROGAO"));
-        let panel = FeedbackEngine::new(betsy(), Config::default()).render(&Config::default());
+        let panel = FeedbackEngine::new(opal(), Config::default()).render(&Config::default());
         assert!(panel.contains("style    House Cel"), "panel: {panel}");
     }
 
     #[test]
     fn climax_is_reachable_and_narrated() {
-        let mut engine = FeedbackEngine::new(betsy(), Config::default());
+        let mut engine = FeedbackEngine::new(opal(), Config::default());
         for i in 0..60u64 {
             let _ = engine.feed(InputEvent::Squeeze {
                 tick: i * 30,

@@ -1,4 +1,4 @@
-# TRIAL — deterministic code animation on the Hands-On girls (Betsy)
+# TRIAL — deterministic code animation on the Hands-On girls (Opal)
 
 Date: 2026-10-26.
 No shipping file was modified. All art is the crate's own (game.html).
@@ -38,7 +38,7 @@ Everything else the Owner asked about holds, with numbers:
 
 ## 1. Route and cost
 
-No SVG rasterizer or browser exists in the sandbox, so Betsy's stage
+No SVG rasterizer or browser exists in the sandbox, so Opal's stage
 SVG (extracted verbatim from game.html as `stage.svg`, 10,774 B) is
 decomposed by a purpose-built subset rasterizer, `svgmini.py`
 (~330 lines: paths/ellipses/rects/lines, `use` resolution, opacity
@@ -51,7 +51,7 @@ hearts) — each with the pivots the game's own markup implies (chest
 browser rasterizer; every layer the animator moves comes from this
 same rasterizer, so all motion comparisons are internally exact.
 The rest frame was eyeballed against the game art before any motion
-work (`rest_frame.png` — it is Betsy, correctly assembled).
+work (`rest_frame.png` — it is Opal, correctly assembled).
 
 The animator (`trial.py`, ~600 lines) extends the estate spike's
 `animate.py` rather than reinventing it: fixed 16 fps clock,
@@ -173,7 +173,7 @@ both sides of the comparison.)
 - **Warp amplitude ceiling ≈ ±8 px.** Past that, bilinear warping
   bends hard cel linework visibly (spike §4). Large pose change
   must be authored states, never bigger warps.
-- **The evaluator is only as good as the parts.** Betsy's hands
+- **The evaluator is only as good as the parts.** Opal's hands
   are ellipses, so her contact reads as ellipses. This is an art
   finding delivered by an animation trial.
 - **Rasterizer subset.** svgmini has no gradients, filters, or
@@ -206,7 +206,7 @@ work or the trained-I2V lane, as the spike already ruled.
 code-animatable only if she is authored as **layered parts with
 named pivots plus an authored expression state set** (the four eye
 layers, mouth pair, blush/sparkle/hearts overlays are the working
-minimum — Betsy has exactly this, which is why she passed). A
+minimum — Opal has exactly this, which is why she passed). A
 flattened illustration gets only the spike's whole-still warps.
 Two additions would raise the contact ceiling for future girls:
 hands drawn with finger/thumb shapes, and a contact-shadow layer.

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hands-On Android manifest (Gradle-free packaging; see build-apk.sh).
+     Package id ai.ntranch.handson — declared here first (the Rust workspace
+     declares no application id). NativeActivity hosts the eframe/winit app;
+     the Rust library name is libhands_on_app.so (crate hands-on-app). -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="ai.ntranch.handson"
+    android:versionCode="1"
+    android:versionName="0.1.0">
+
+    <uses-sdk
+        android:minSdkVersion="26"
+        android:targetSdkVersion="34" />
+
+    <application
+        android:label="Hands-On"
+        android:icon="@mipmap/ic_launcher"
+        android:theme="@android:style/Theme.DeviceDefault"
+        android:extractNativeLibs="true"
+        android:hasCode="false">
+        <activity
+            android:name="android.app.NativeActivity"
+            android:exported="true"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="hands_on_app" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

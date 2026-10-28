@@ -76,7 +76,7 @@ Addition V shape exactly.
 
 ## Track 1 — Play (the milking game teaches the engine)
 
-Host: **Betsy** — cowgirl hostess of the teaching farm; cow ears
+Host: **Opal** — cowgirl hostess of the teaching farm; cow ears
 and horns, cow-print outfit, cowbell, tail. Patient and teasing;
 her balanced default profile (gain 1.0, threshold 96, reservoir
 220) forgives a beginner's tempo while they learn the windows.
@@ -91,7 +91,7 @@ her balanced default profile (gain 1.0, threshold 96, reservoir
 ### The reaction-profile lesson (Play 4, the centerpiece)
 
 A reaction profile is four numbers — **gain, threshold,
-reservoir, refractory** — and Betsy is a different girl under
+reservoir, refractory** — and Opal is a different girl under
 each setting:
 
 - **HIGH gain / low threshold:** a few on-beat squeezes trigger
@@ -117,7 +117,7 @@ fake-haptics readout in the TUI is the profile's output as the
 
 ## Track 2 — Studio (authoring animations like the game's own)
 
-Host for the studio lessons: the same Betsy in Level 1's Studio
+Host for the studio lessons: the same Opal in Level 1's Studio
 Mode panel; the full Loop Studio level is Playroom **P4**,
 hosted by Mireille. The Play and Studio lesson tracks together
 form the **Playroom track** of the menu.
@@ -181,7 +181,7 @@ a contract, exactly like the parameters it renders.
 
 ## The codified level map
 
-### P1 — First Milking · host Betsy · **BUILT**
+### P1 — First Milking · host Opal · **BUILT**
 - **Source system:** Torogao's parameter model + reaction
   profiles.
 - **Exercise:** the milking game of SPEC §2/§5 (this package).
@@ -231,14 +231,14 @@ a contract, exactly like the parameters it renders.
 - **Twins:** Bevy schedules/queries/change detection;
   `torogao-engine`'s fixed-step evaluation order.
 
-### P4 — Loop Studio · host Mireille · **PLAYABLE SLICE (on Betsy)**
+### P4 — Loop Studio · host Mireille · **PLAYABLE SLICE (on Opal)**
 - **Source system:** Torogao animation authoring — keyform
   tracks, loop closure, the bake.
 - **Exercise:** author a keyform loop (Studio Mode grown up),
   bake it at 10 ms, and pass the twin-run gate. Seed
-  `betsy-loop-a1` is shown; the frame table prints as it bakes;
+  `opal-loop-a1` is shown; the frame table prints as it bakes;
   two hashes must match and closure must hold. The playable
-  slice runs on Betsy; Mireille hosts the level's full design.
+  slice runs on Opal; Mireille hosts the level's full design.
 - **Success → host:** a loop that closes and twin-runs
   identical plays on her seamlessly, forever — the hash match
   *is* the stimulation event.
@@ -362,7 +362,7 @@ absent), never-type fallback (Lesson 2, error paths).
 
 | Lesson | Teaches (Rust Book) | Exercise sketch | Her feedback shows | Torogao twin |
 |---|---|---|---|---|
-| S1 Own the Puppet | ch. 4 ownership, ch. 5 structs, ch. 6 enums, ch. 10 lifetimes | Repair a puppet-file parser's ownership: arrange moves/borrows so the parse holds; a borrow error is staged as the sitting stopping safely | Betsy holds a pose while you hold the borrow — drop it wrong and she resets, unruffled, and the log names the rule | `torogao-format` parsing (INP1 model space) |
+| S1 Own the Puppet | ch. 4 ownership, ch. 5 structs, ch. 6 enums, ch. 10 lifetimes | Repair a puppet-file parser's ownership: arrange moves/borrows so the parse holds; a borrow error is staged as the sitting stopping safely | Opal holds a pose while you hold the borrow — drop it wrong and she resets, unruffled, and the log names the rule | `torogao-format` parsing (INP1 model space) |
 | S2 Fail Closed | ch. 9 error handling, ch. 10 traits/generics | Build a license-gate check that must refuse typed: given doctored headers, choose the error variant each deserves; a stringly failure trips the gate | Vigil's regard is the error budget: exact variants warm her, vague ones cool her on the spot | moc3 importer/exporter fail-closed license gate |
 | S3 The Accumulator | ch. 3 types, ch. 13 iterators/closures, gen blocks (2024) | Implement the fixed-step accumulator with integer tick arithmetic — no floats in the contract — and prove frame counts against a drifting naive version | Sable dances to your clock: drift shows on her face before it shows in your numbers | `torogao-engine` fixed-step evaluation |
 | S4 Hold the Frame | ch. 15 smart pointers, ch. 16 concurrency, unsafe extern (2024) | Own a GPU-ish resource lifecycle on paper: order the drops, place the one justified unsafe block, bound it, fence it | Mireille keeps the frame only while every resource has an owner; an orphaned handle visibly flickers her | renderer on winit/wgpu/egui |
